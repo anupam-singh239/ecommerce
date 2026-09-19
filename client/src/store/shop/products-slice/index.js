@@ -73,7 +73,7 @@ export const fetchAllFilteredProducts =
 
         const result =
           await axios.get(
-            `http://localhost:5000/api/shop/products/get?${queryParams.toString()}`,
+            `https://ecommerce-h0hd.onrender.com/api/shop/products/get?${queryParams.toString()}`,
             {
               withCredentials: true,
             }
@@ -165,7 +165,7 @@ export const fetchProductDetails =
 
         const result =
           await axios.get(
-            `http://localhost:5000/api/shop/products/get/${productId}`,
+            `https://ecommerce-h0hd.onrender.com/api/shop/products/get/${productId}`,
             {
               withCredentials: true,
             }

@@ -176,7 +176,7 @@ function ShoppingCheckout() {
       setCouponLoading(true);
 
       const response = await axios.post(
-        "http://localhost:5000/api/shop/coupon/apply",
+        "https://ecommerce-h0hd.onrender.com/api/shop/coupon/apply",
         {
           code: couponCode.trim(),
           orderAmount: totalCartAmount,
@@ -505,7 +505,7 @@ function ShoppingCheckout() {
 
       const response =
         await axios.post(
-          "http://localhost:5000/api/shop/order/razorpay/create",
+          "https://ecommerce-h0hd.onrender.com/api/shop/order/razorpay/create",
           orderData,
           {
             withCredentials: true,
@@ -575,7 +575,7 @@ function ShoppingCheckout() {
 
               const verifyResponse =
                 await axios.post(
-                  "http://localhost:5000/api/shop/order/razorpay/verify",
+                  "https://ecommerce-h0hd.onrender.com/api/shop/order/razorpay/verify",
                   {
                     razorpay_order_id:
                       paymentResponse.razorpay_order_id,

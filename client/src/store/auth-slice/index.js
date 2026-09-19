@@ -15,7 +15,7 @@ export const registerUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
+      "https://ecommerce-h0hd.onrender.com/api/auth/register",
       formData,
       {
         withCredentials: true,
@@ -34,7 +34,7 @@ export const loginUser = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/login",
+      "https://ecommerce-h0hd.onrender.com/api/auth/login",
       formData,
       {
         withCredentials: true,
@@ -53,7 +53,7 @@ export const updateUserProfile = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.put(
-      "http://localhost:5000/api/auth/profile",
+      "https://ecommerce-h0hd.onrender.com/api/auth/profile",
       formData,
       {
         withCredentials: true,
@@ -72,7 +72,7 @@ export const uploadProfileImage = createAsyncThunk(
 
   async (formData) => {
     const response = await axios.put(
-      "http://localhost:5000/api/auth/profile-image",
+      "https://ecommerce-h0hd.onrender.com/api/auth/profile-image",
       formData,
       {
         withCredentials: true,
@@ -94,7 +94,7 @@ export const changePassword = createAsyncThunk(
 
   async (passwordData) => {
     const response = await axios.put(
-      "http://localhost:5000/api/auth/change-password",
+      "https://ecommerce-h0hd.onrender.com/api/auth/change-password",
       passwordData,
       {
         withCredentials: true,
@@ -113,7 +113,7 @@ export const logoutUser = createAsyncThunk(
 
   async () => {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/logout",
+      "https://ecommerce-h0hd.onrender.com/api/auth/logout",
       {},
       {
         withCredentials: true,
@@ -132,7 +132,7 @@ export const checkAuth = createAsyncThunk(
 
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/auth/check-auth",
+      "https://ecommerce-h0hd.onrender.com/api/auth/check-auth",
       {
         withCredentials: true,
         headers: {

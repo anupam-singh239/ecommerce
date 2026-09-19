@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-const API_URL = "http://localhost:5000/api/admin/offers";
+const API_URL = "https://ecommerce-h0hd.onrender.com/api/admin/offers";
 
 // ===============================
 // Get All Offers

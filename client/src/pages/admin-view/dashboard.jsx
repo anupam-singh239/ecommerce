@@ -31,7 +31,7 @@ function AdminDashboard() {
         setLoading(true);
 
         const response = await axios.get(
-          "http://localhost:5000/api/admin/dashboard/stats",
+          "https://ecommerce-h0hd.onrender.com/api/admin/dashboard/stats",
           {
             withCredentials: true,
           }

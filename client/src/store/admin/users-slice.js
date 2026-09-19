@@ -20,7 +20,7 @@ export const getAllUsersForAdmin = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/admin/users/get",
+        "https://ecommerce-h0hd.onrender.com/api/admin/users/get",
         {
           withCredentials: true,
         }
@@ -47,7 +47,7 @@ export const getUserDetailsForAdmin = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/users/details/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/admin/users/details/${id}`,
         {
           withCredentials: true,
         }
@@ -74,7 +74,7 @@ export const updateUserRoleForAdmin = createAsyncThunk(
   async ({ id, role }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/users/update-role/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/admin/users/update-role/${id}`,
         {
           role,
         },
@@ -104,7 +104,7 @@ export const deleteUserForAdmin = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/admin/users/delete/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/admin/users/delete/${id}`,
         {
           withCredentials: true,
         }

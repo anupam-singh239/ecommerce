@@ -203,7 +203,7 @@ function PayPalButton({ orderData, onSuccess }) {
           // ==========================================
 
           const response = await axios.post(
-            "http://localhost:5000/api/shop/order/paypal/create",
+            "https://ecommerce-h0hd.onrender.com/api/shop/order/paypal/create",
             orderData,
             {
               withCredentials: true,
@@ -328,7 +328,7 @@ function PayPalButton({ orderData, onSuccess }) {
           );
 
           const response = await axios.post(
-            "http://localhost:5000/api/shop/order/capture",
+            "https://ecommerce-h0hd.onrender.com/api/shop/order/capture",
             {
               paypalOrderId,
               localOrderId,

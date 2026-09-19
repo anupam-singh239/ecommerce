@@ -14,7 +14,7 @@ export const fetchWishlist = createAsyncThunk(
   "/wishlist/fetchWishlist",
   async () => {
     const response = await axios.get(
-      "http://localhost:5000/api/shop/wishlist/get",
+      "https://ecommerce-h0hd.onrender.com/api/shop/wishlist/get",
       {
         withCredentials: true,
       }
@@ -40,7 +40,7 @@ export const addToWishlist = createAsyncThunk(
   "/wishlist/addToWishlist",
   async (productId) => {
     const response = await axios.post(
-      "http://localhost:5000/api/shop/wishlist/add",
+      "https://ecommerce-h0hd.onrender.com/api/shop/wishlist/add",
       {
         productId,
       },
@@ -61,7 +61,7 @@ export const removeFromWishlist = createAsyncThunk(
   "/wishlist/removeFromWishlist",
   async (productId) => {
     const response = await axios.delete(
-      `http://localhost:5000/api/shop/wishlist/remove/${productId}`,
+      `https://ecommerce-h0hd.onrender.com/api/shop/wishlist/remove/${productId}`,
       {
         withCredentials: true,
       }

@@ -60,7 +60,7 @@ function ProductImageUpload({
       data.append("my_file", imageFile);
 
       const response = await axios.post(
-        "http://localhost:5000/api/admin/products/upload-image",
+        "https://ecommerce-h0hd.onrender.com/api/admin/products/upload-image",
         data,
         {
           withCredentials: true,

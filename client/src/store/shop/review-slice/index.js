@@ -15,7 +15,7 @@ export const addReview = createAsyncThunk(
   async (formdata, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/review/add",
+        "https://ecommerce-h0hd.onrender.com/api/shop/review/add",
         formdata,
         {
           withCredentials: true,
@@ -54,7 +54,7 @@ export const getReviews = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/review/${id}`
+        `https://ecommerce-h0hd.onrender.com/api/shop/review/${id}`
       );
 
       console.log(

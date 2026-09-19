@@ -12,7 +12,7 @@ export const getAllOrdersForAdmin = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        "http://localhost:5000/api/admin/orders/get",
+        "https://ecommerce-h0hd.onrender.com/api/admin/orders/get",
         {
           withCredentials: true,
         }
@@ -35,7 +35,7 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/admin/orders/details/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/admin/orders/details/${id}`,
         {
           withCredentials: true,
         }
@@ -58,7 +58,7 @@ export const updateOrderStatus = createAsyncThunk(
   async ({ id, orderStatus }, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/admin/orders/update/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/admin/orders/update/${id}`,
         {
           orderStatus,
         },

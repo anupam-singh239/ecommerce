@@ -18,7 +18,7 @@ export const createNewOrder = createAsyncThunk(
   async (orderData, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/order/create",
+        "https://ecommerce-h0hd.onrender.com/api/shop/order/create",
         orderData,
         {
           withCredentials: true,
@@ -46,7 +46,7 @@ export const getAllOrdersByUserId = createAsyncThunk(
   async (userId, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/order/list/${userId}`,
+        `https://ecommerce-h0hd.onrender.com/api/shop/order/list/${userId}`,
         {
           withCredentials: true,
         }
@@ -73,7 +73,7 @@ export const getOrderDetails = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/shop/order/details/${id}`,
+        `https://ecommerce-h0hd.onrender.com/api/shop/order/details/${id}`,
         {
           withCredentials: true,
         }
@@ -101,7 +101,7 @@ export const capturePayment = createAsyncThunk(
   async ({ paymentId, payerId, orderId }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/shop/order/capture",
+        "https://ecommerce-h0hd.onrender.com/api/shop/order/capture",
         {
           paymentId,
           payerId,
