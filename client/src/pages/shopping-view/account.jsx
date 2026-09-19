@@ -35,9 +35,6 @@ import {
 
 /* =====================================================
    SECURITY SECTION
-   IMPORTANT:
-   This component is OUTSIDE ShoppingAccount.
-   This prevents input focus from disappearing.
 ===================================================== */
 
 function SecuritySection({
@@ -49,38 +46,14 @@ function SecuritySection({
   isChangingPassword,
 }) {
   return (
-    <div
-      className="
-        mt-8
-        bg-white
-        border
-        border-gray-100
-        rounded-2xl
-        shadow-sm
-        p-6
-        md:p-8
-      "
-    >
+    <div className="mt-8 bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
       <div className="flex items-center gap-3">
-        <div
-          className="
-            w-11
-            h-11
-            rounded-xl
-            bg-orange-50
-            flex
-            items-center
-            justify-center
-          "
-        >
+        <div className="w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center">
           <ShieldCheck className="w-6 h-6 text-orange-600" />
         </div>
 
         <div>
-          <h2 className="text-xl font-bold">
-            Security
-          </h2>
-
+          <h2 className="text-xl font-bold">Security</h2>
           <p className="text-sm text-gray-500">
             Keep your account secure
           </p>
@@ -88,53 +61,18 @@ function SecuritySection({
       </div>
 
       {message && (
-        <div
-          className="
-            mt-6
-            rounded-lg
-            border
-            border-green-200
-            bg-green-50
-            px-4
-            py-3
-            text-sm
-            font-medium
-            text-green-700
-          "
-        >
+        <div className="mt-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
           {message}
         </div>
       )}
 
       {error && (
-        <div
-          className="
-            mt-6
-            rounded-lg
-            border
-            border-red-200
-            bg-red-50
-            px-4
-            py-3
-            text-sm
-            font-medium
-            text-red-600
-          "
-        >
+        <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
           {error}
         </div>
       )}
 
-      <div
-        className="
-          mt-6
-          border
-          border-gray-200
-          rounded-xl
-          p-5
-          md:p-6
-        "
-      >
+      <div className="mt-6 border border-gray-200 rounded-xl p-5 md:p-6">
         <div className="mb-6">
           <h3 className="text-lg font-bold text-gray-900">
             Change Password
@@ -145,20 +83,9 @@ function SecuritySection({
           </p>
         </div>
 
-        <form
-          onSubmit={handleChangePassword}
-          className="space-y-5"
-        >
+        <form onSubmit={handleChangePassword} className="space-y-5">
           <div>
-            <label
-              className="
-                block
-                text-sm
-                font-semibold
-                text-gray-700
-                mb-2
-              "
-            >
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Current Password
             </label>
 
@@ -169,32 +96,12 @@ function SecuritySection({
               onChange={handlePasswordChange}
               placeholder="Enter current password"
               autoComplete="current-password"
-              className="
-                w-full
-                rounded-xl
-                border
-                border-gray-200
-                bg-white
-                py-3
-                px-4
-                outline-none
-                focus:border-black
-                focus:ring-1
-                focus:ring-black
-              "
+              className="w-full rounded-xl border border-gray-200 bg-white py-3 px-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
           <div>
-            <label
-              className="
-                block
-                text-sm
-                font-semibold
-                text-gray-700
-                mb-2
-              "
-            >
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               New Password
             </label>
 
@@ -205,19 +112,7 @@ function SecuritySection({
               onChange={handlePasswordChange}
               placeholder="Enter new password"
               autoComplete="new-password"
-              className="
-                w-full
-                rounded-xl
-                border
-                border-gray-200
-                bg-white
-                py-3
-                px-4
-                outline-none
-                focus:border-black
-                focus:ring-1
-                focus:ring-black
-              "
+              className="w-full rounded-xl border border-gray-200 bg-white py-3 px-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
 
             <p className="mt-2 text-xs text-gray-500">
@@ -226,15 +121,7 @@ function SecuritySection({
           </div>
 
           <div>
-            <label
-              className="
-                block
-                text-sm
-                font-semibold
-                text-gray-700
-                mb-2
-              "
-            >
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
               Confirm New Password
             </label>
 
@@ -245,19 +132,7 @@ function SecuritySection({
               onChange={handlePasswordChange}
               placeholder="Confirm new password"
               autoComplete="new-password"
-              className="
-                w-full
-                rounded-xl
-                border
-                border-gray-200
-                bg-white
-                py-3
-                px-4
-                outline-none
-                focus:border-black
-                focus:ring-1
-                focus:ring-black
-              "
+              className="w-full rounded-xl border border-gray-200 bg-white py-3 px-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
             />
           </div>
 
@@ -265,24 +140,7 @@ function SecuritySection({
             <button
               type="submit"
               disabled={isChangingPassword}
-              className="
-                flex
-                items-center
-                justify-center
-                gap-2
-                rounded-xl
-                bg-black
-                px-6
-                py-3
-                text-sm
-                font-semibold
-                text-white
-                hover:bg-gray-800
-                disabled:opacity-50
-                disabled:cursor-not-allowed
-                transition
-                cursor-pointer
-              "
+              className="flex items-center justify-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
             >
               <ShieldCheck className="w-4 h-4" />
 
@@ -302,9 +160,7 @@ function SecuritySection({
 ===================================================== */
 
 function ShoppingAccount() {
-  const { user } = useSelector(
-    (state) => state.auth
-  );
+  const { user } = useSelector((state) => state.auth);
 
   const wishlist = useSelector(
     (state) => state.shopWishlist?.wishlist || []
@@ -329,11 +185,8 @@ function ShoppingAccount() {
     phone: user?.phone || "",
   });
 
-  const [message, setMessage] =
-    useState("");
-
-  const [error, setError] =
-    useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   /* =====================================================
      PROFILE IMAGE STATES
@@ -364,7 +217,6 @@ function ShoppingAccount() {
 
   /* =====================================================
      FETCH WISHLIST
-     This runs when account page loads.
   ===================================================== */
 
   useEffect(() => {
@@ -385,12 +237,10 @@ function ShoppingAccount() {
      USER INFORMATION
   ===================================================== */
 
-  const userName =
-    user?.userName || "User";
+  const userName = user?.userName || "User";
 
   const userEmail =
-    user?.email ||
-    "Email not available";
+    user?.email || "Email not available";
 
   const userPhone =
     user?.phone ||
@@ -408,24 +258,18 @@ function ShoppingAccount() {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setError(
-        "Please select a valid image."
-      );
+      setError("Please select a valid image.");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setError(
-        "Image size must be less than 5MB."
-      );
+      setError("Image size must be less than 5MB.");
       return;
     }
 
     setSelectedImage(file);
 
-    setImagePreview(
-      URL.createObjectURL(file)
-    );
+    setImagePreview(URL.createObjectURL(file));
 
     setMessage("");
     setError("");
@@ -437,9 +281,7 @@ function ShoppingAccount() {
 
   async function handleUploadImage() {
     if (!selectedImage) {
-      setError(
-        "Please select an image first."
-      );
+      setError("Please select an image first.");
       return;
     }
 
@@ -493,21 +335,15 @@ function ShoppingAccount() {
 
   function handleEditProfile() {
     setFormData({
-      userName:
-        user?.userName || "",
-
-      email:
-        user?.email || "",
-
-      phone:
-        user?.phone || "",
+      userName: user?.userName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     });
 
     setMessage("");
     setError("");
 
     setIsEditing(true);
-
     setActiveSection("personal");
   }
 
@@ -516,10 +352,7 @@ function ShoppingAccount() {
   ===================================================== */
 
   function handleChange(e) {
-    const {
-      name,
-      value,
-    } = e.target;
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -538,30 +371,21 @@ function ShoppingAccount() {
     setError("");
 
     if (!formData.userName.trim()) {
-      setError(
-        "Please enter your name."
-      );
+      setError("Please enter your name.");
       return;
     }
 
     if (!formData.email.trim()) {
-      setError(
-        "Please enter your email."
-      );
+      setError("Please enter your email.");
       return;
     }
 
     try {
       const result = await dispatch(
         updateUserProfile({
-          userName:
-            formData.userName.trim(),
-
-          email:
-            formData.email.trim(),
-
-          phone:
-            formData.phone.trim(),
+          userName: formData.userName.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
         })
       ).unwrap();
 
@@ -592,14 +416,9 @@ function ShoppingAccount() {
 
   function handleCancelEdit() {
     setFormData({
-      userName:
-        user?.userName || "",
-
-      email:
-        user?.email || "",
-
-      phone:
-        user?.phone || "",
+      userName: user?.userName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
     });
 
     setMessage("");
@@ -625,10 +444,7 @@ function ShoppingAccount() {
   ===================================================== */
 
   function handlePasswordChange(e) {
-    const {
-      name,
-      value,
-    } = e.target;
+    const { name, value } = e.target;
 
     setPasswordData((prev) => ({
       ...prev,
@@ -674,8 +490,7 @@ function ShoppingAccount() {
     }
 
     if (
-      newPassword !==
-      confirmPassword
+      newPassword !== confirmPassword
     ) {
       setError(
         "New password and confirm password do not match."
@@ -745,7 +560,6 @@ function ShoppingAccount() {
     if (type === "wishlist") {
       setActiveSection("wishlist");
 
-      // Wishlist refresh
       dispatch(fetchWishlist());
 
       return;
@@ -785,75 +599,28 @@ function ShoppingAccount() {
         onClick={() =>
           handleCardClick(type)
         }
-        className="
-          group
-          w-full
-          text-left
-          bg-white
-          border
-          border-gray-100
-          rounded-xl
-          p-6
-          shadow-sm
-          hover:shadow-lg
-          hover:-translate-y-1
-          transition-all
-          duration-300
-          cursor-pointer
-        "
+        className="group w-full text-left bg-white border border-gray-100 rounded-xl p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer"
       >
         <div className="flex items-start justify-between">
           <div
             className={`
-              w-12
-              h-12
-              rounded-xl
-              flex
-              items-center
-              justify-center
-              ${iconBg}
+              w-12 h-12 rounded-xl flex items-center
+              justify-center ${iconBg}
             `}
           >
             <Icon
-              className={`
-                w-6
-                h-6
-                ${iconColor}
-              `}
+              className={`w-6 h-6 ${iconColor}`}
             />
           </div>
 
-          <ChevronRight
-            className="
-              w-5
-              h-5
-              text-gray-400
-              group-hover:text-black
-              group-hover:translate-x-1
-              transition-all
-            "
-          />
+          <ChevronRight className="w-5 h-5 text-gray-400 group-hover:text-black group-hover:translate-x-1 transition-all" />
         </div>
 
-        <h3
-          className="
-            mt-6
-            text-lg
-            font-bold
-            text-gray-900
-          "
-        >
+        <h3 className="mt-6 text-lg font-bold text-gray-900">
           {title}
         </h3>
 
-        <p
-          className="
-            mt-2
-            text-sm
-            text-gray-500
-            leading-6
-          "
-        >
+        <p className="mt-2 text-sm text-gray-500 leading-6">
           {description}
         </p>
       </button>
@@ -866,53 +633,15 @@ function ShoppingAccount() {
 
   function ProfileHeader() {
     return (
-      <div
-        className="
-          bg-white
-          border
-          border-gray-100
-          rounded-2xl
-          shadow-sm
-          p-6
-          md:p-8
-        "
-      >
-        <div
-          className="
-            flex
-            flex-col
-            md:flex-row
-            md:items-center
-            gap-6
-          "
-        >
+      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
+        <div className="flex flex-col md:flex-row md:items-center gap-6">
           <div className="relative w-24 shrink-0">
-            <div
-              className="
-                w-24
-                h-24
-                rounded-full
-                overflow-hidden
-                bg-black
-                text-white
-                flex
-                items-center
-                justify-center
-                text-4xl
-                font-bold
-                border-2
-                border-gray-200
-              "
-            >
+            <div className="w-24 h-24 rounded-full overflow-hidden bg-black text-white flex items-center justify-center text-4xl font-bold border-2 border-gray-200">
               {imagePreview ? (
                 <img
                   src={imagePreview}
                   alt="Profile"
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                  "
+                  className="w-full h-full object-cover"
                 />
               ) : (
                 userName
@@ -923,24 +652,7 @@ function ShoppingAccount() {
 
             <label
               htmlFor="profileImage"
-              className="
-                absolute
-                bottom-0
-                right-0
-                w-9
-                h-9
-                rounded-full
-                bg-black
-                text-white
-                flex
-                items-center
-                justify-center
-                border-2
-                border-white
-                cursor-pointer
-                hover:bg-gray-800
-                transition
-              "
+              className="absolute bottom-0 right-0 w-9 h-9 rounded-full bg-black text-white flex items-center justify-center border-2 border-white cursor-pointer hover:bg-gray-800 transition"
               title="Change profile photo"
             >
               <Camera className="w-4 h-4" />
@@ -951,35 +663,15 @@ function ShoppingAccount() {
               type="file"
               accept="image/*"
               className="hidden"
-              onChange={
-                handleImageSelect
-              }
+              onChange={handleImageSelect}
             />
 
             {selectedImage && (
               <button
                 type="button"
-                onClick={
-                  handleUploadImage
-                }
-                disabled={
-                  isUploadingImage
-                }
-                className="
-                  mt-3
-                  w-24
-                  rounded-lg
-                  bg-black
-                  px-2
-                  py-2
-                  text-xs
-                  font-semibold
-                  text-white
-                  hover:bg-gray-800
-                  disabled:opacity-50
-                  transition
-                  cursor-pointer
-                "
+                onClick={handleUploadImage}
+                disabled={isUploadingImage}
+                className="mt-3 w-24 rounded-lg bg-black px-2 py-2 text-xs font-semibold text-white hover:bg-gray-800 disabled:opacity-50 transition cursor-pointer"
               >
                 {isUploadingImage
                   ? "Uploading..."
@@ -989,83 +681,31 @@ function ShoppingAccount() {
           </div>
 
           <div className="flex-1">
-            <div
-              className="
-                flex
-                flex-col
-                md:flex-row
-                md:items-center
-                md:justify-between
-                gap-4
-              "
-            >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
               <div>
-                <h1
-                  className="
-                    text-2xl
-                    md:text-3xl
-                    font-bold
-                    text-gray-900
-                  "
-                >
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
                   {userName}
                 </h1>
 
-                <div
-                  className="
-                    flex
-                    flex-col
-                    sm:flex-row
-                    sm:items-center
-                    gap-3
-                    sm:gap-6
-                    mt-3
-                    text-gray-600
-                  "
-                >
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mt-3 text-gray-600">
                   <div className="flex items-center gap-2">
                     <Mail className="w-4 h-4" />
-
-                    <span>
-                      {userEmail}
-                    </span>
+                    <span>{userEmail}</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <Phone className="w-4 h-4" />
-
-                    <span>
-                      {userPhone}
-                    </span>
+                    <span>{userPhone}</span>
                   </div>
                 </div>
               </div>
 
               <button
                 type="button"
-                onClick={
-                  handleEditProfile
-                }
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  gap-2
-                  border
-                  border-gray-200
-                  rounded-lg
-                  px-5
-                  py-2.5
-                  text-sm
-                  font-semibold
-                  hover:bg-black
-                  hover:text-white
-                  transition-all
-                  cursor-pointer
-                "
+                onClick={handleEditProfile}
+                className="flex items-center justify-center gap-2 border border-gray-200 rounded-lg px-5 py-2.5 text-sm font-semibold hover:bg-black hover:text-white transition-all cursor-pointer"
               >
                 <Pencil className="w-4 h-4" />
-
                 Edit Profile
               </button>
             </div>
@@ -1082,15 +722,7 @@ function ShoppingAccount() {
   function Overview() {
     return (
       <div className="mt-8">
-        <div
-          className="
-            grid
-            grid-cols-1
-            md:grid-cols-2
-            lg:grid-cols-3
-            gap-6
-          "
-        >
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AccountCard
             icon={Package}
             title="My Orders"
@@ -1155,31 +787,10 @@ function ShoppingAccount() {
 
   function PersonalInformation() {
     return (
-      <div
-        className="
-          mt-8
-          bg-white
-          border
-          border-gray-100
-          rounded-2xl
-          shadow-sm
-          p-6
-          md:p-8
-        "
-      >
+      <div className="mt-8 bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div
-              className="
-                w-11
-                h-11
-                rounded-xl
-                bg-purple-50
-                flex
-                items-center
-                justify-center
-              "
-            >
+            <div className="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center">
               <User className="w-5 h-5 text-purple-600" />
             </div>
 
@@ -1196,208 +807,86 @@ function ShoppingAccount() {
         </div>
 
         {message && (
-          <div
-            className="
-              mb-5
-              rounded-lg
-              border
-              border-green-200
-              bg-green-50
-              px-4
-              py-3
-              text-sm
-              font-medium
-              text-green-700
-            "
-          >
+          <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
             {message}
           </div>
         )}
 
         {error && (
-          <div
-            className="
-              mb-5
-              rounded-lg
-              border
-              border-red-200
-              bg-red-50
-              px-4
-              py-3
-              text-sm
-              font-medium
-              text-red-600
-            "
-          >
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
             {error}
           </div>
         )}
 
         {isEditing ? (
-          <form
-            onSubmit={
-              handleSaveProfile
-            }
-          >
+          <form onSubmit={handleSaveProfile}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {/* NAME */}
+
               <div>
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-gray-700
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Full Name
                 </label>
 
                 <div className="relative">
-                  <User
-                    className="
-                      absolute
-                      left-3
-                      top-1/2
-                      -translate-y-1/2
-                      w-5
-                      h-5
-                      text-gray-400
-                    "
-                  />
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
 
                   <input
                     type="text"
                     name="userName"
-                    value={
-                      formData.userName
-                    }
-                    onChange={
-                      handleChange
-                    }
+                    value={formData.userName}
+                    onChange={handleChange}
                     placeholder="Enter your full name"
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-white
-                      py-3
-                      pl-11
-                      pr-4
-                      outline-none
-                      focus:border-black
-                      focus:ring-1
-                      focus:ring-black
-                    "
+                    autoComplete="name"
+                    className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
               </div>
 
+              {/* EMAIL */}
+
               <div>
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-gray-700
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Email Address
                 </label>
 
                 <div className="relative">
-                  <Mail
-                    className="
-                      absolute
-                      left-3
-                      top-1/2
-                      -translate-y-1/2
-                      w-5
-                      h-5
-                      text-gray-400
-                    "
-                  />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
 
                   <input
                     type="email"
                     name="email"
-                    value={
-                      formData.email
-                    }
-                    onChange={
-                      handleChange
-                    }
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="Enter your email"
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-white
-                      py-3
-                      pl-11
-                      pr-4
-                      outline-none
-                      focus:border-black
-                      focus:ring-1
-                      focus:ring-black
-                    "
+                    autoComplete="email"
+                    className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
               </div>
 
+              {/* MOBILE NUMBER — FIXED */}
+
               <div>
-                <label
-                  className="
-                    block
-                    text-sm
-                    font-semibold
-                    text-gray-700
-                    mb-2
-                  "
-                >
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Mobile Number
                 </label>
 
                 <div className="relative">
-                  <Phone
-                    className="
-                      absolute
-                      left-3
-                      top-1/2
-                      -translate-y-1/2
-                      w-5
-                      h-5
-                      text-gray-400
-                    "
-                  />
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
 
                   <input
                     type="tel"
                     name="phone"
-                    value={
-                      formData.phone
-                    }
-                    onChange={
-                      handleChange
-                    }
+                    value={formData.phone}
+                    onChange={handleChange}
                     placeholder="Enter mobile number"
-                    className="
-                      w-full
-                      rounded-xl
-                      border
-                      border-gray-200
-                      bg-white
-                      py-3
-                      pl-11
-                      pr-4
-                      outline-none
-                      focus:border-black
-                      focus:ring-1
-                      focus:ring-black
-                    "
+                    inputMode="numeric"
+                    autoComplete="tel"
+                    autoCorrect="off"
+                    autoCapitalize="none"
+                    spellCheck="false"
+                    className="w-full rounded-xl border border-gray-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-black focus:ring-1 focus:ring-black"
                   />
                 </div>
               </div>
@@ -1406,65 +895,25 @@ function ShoppingAccount() {
             <div className="flex flex-wrap gap-3 mt-6">
               <button
                 type="submit"
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  bg-black
-                  px-6
-                  py-3
-                  text-sm
-                  font-semibold
-                  text-white
-                  hover:bg-gray-800
-                  transition
-                  cursor-pointer
-                "
+                className="flex items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition cursor-pointer"
               >
                 <Save className="w-4 h-4" />
-
                 Save Changes
               </button>
 
               <button
                 type="button"
-                onClick={
-                  handleCancelEdit
-                }
-                className="
-                  flex
-                  items-center
-                  gap-2
-                  rounded-xl
-                  border
-                  border-gray-200
-                  px-6
-                  py-3
-                  text-sm
-                  font-semibold
-                  text-gray-700
-                  hover:bg-gray-100
-                  transition
-                  cursor-pointer
-                "
+                onClick={handleCancelEdit}
+                className="flex items-center gap-2 rounded-xl border border-gray-200 px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition cursor-pointer"
               >
                 <X className="w-4 h-4" />
-
                 Cancel
               </button>
             </div>
           </form>
         ) : (
           <div>
-            <div
-              className="
-                grid
-                grid-cols-1
-                md:grid-cols-2
-                gap-5
-              "
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="border rounded-xl p-5">
                 <p className="text-sm text-gray-500">
                   Full Name
@@ -1480,14 +929,7 @@ function ShoppingAccount() {
                   Email Address
                 </p>
 
-                <p
-                  className="
-                    mt-2
-                    font-semibold
-                    text-gray-900
-                    break-all
-                  "
-                >
+                <p className="mt-2 font-semibold text-gray-900 break-all">
                   {userEmail}
                 </p>
               </div>
@@ -1507,14 +949,7 @@ function ShoppingAccount() {
                   Account Role
                 </p>
 
-                <p
-                  className="
-                    mt-2
-                    font-semibold
-                    text-gray-900
-                    capitalize
-                  "
-                >
+                <p className="mt-2 font-semibold text-gray-900 capitalize">
                   {user?.role || "User"}
                 </p>
               </div>
@@ -1522,28 +957,10 @@ function ShoppingAccount() {
 
             <button
               type="button"
-              onClick={
-                handleEditProfile
-              }
-              className="
-                mt-6
-                flex
-                items-center
-                gap-2
-                rounded-xl
-                bg-black
-                px-6
-                py-3
-                text-sm
-                font-semibold
-                text-white
-                hover:bg-gray-800
-                transition
-                cursor-pointer
-              "
+              onClick={handleEditProfile}
+              className="mt-6 flex items-center gap-2 rounded-xl bg-black px-6 py-3 text-sm font-semibold text-white hover:bg-gray-800 transition cursor-pointer"
             >
               <Pencil className="w-4 h-4" />
-
               Edit Profile
             </button>
           </div>
@@ -1558,33 +975,10 @@ function ShoppingAccount() {
 
   function WishlistSection() {
     return (
-      <div
-        className="
-          mt-8
-          bg-white
-          border
-          border-gray-100
-          rounded-2xl
-          shadow-sm
-          p-6
-          md:p-8
-        "
-      >
-        {/* HEADER */}
-
+      <div className="mt-8 bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
-            <div
-              className="
-                w-11
-                h-11
-                rounded-xl
-                bg-red-50
-                flex
-                items-center
-                justify-center
-              "
-            >
+            <div className="w-11 h-11 rounded-xl bg-red-50 flex items-center justify-center">
               <Heart
                 className="w-6 h-6 text-red-500"
                 fill="currentColor"
@@ -1607,74 +1001,27 @@ function ShoppingAccount() {
           </div>
         </div>
 
-        {/* LOADING */}
-
         {wishlistLoading ? (
           <div className="py-16 text-center">
-            <div
-              className="
-                w-10
-                h-10
-                border-4
-                border-gray-200
-                border-t-black
-                rounded-full
-                animate-spin
-                mx-auto
-              "
-            />
+            <div className="w-10 h-10 border-4 border-gray-200 border-t-black rounded-full animate-spin mx-auto" />
 
             <p className="mt-4 text-gray-500">
               Loading wishlist...
             </p>
           </div>
         ) : wishlist.length > 0 ? (
-          /* PRODUCTS */
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              sm:grid-cols-2
-              lg:grid-cols-3
-              xl:grid-cols-4
-              gap-5
-            "
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
             {wishlist.map((product, index) => (
               <div
-                key={
-                  product?._id || index
-                }
-                className="
-                  group
-                  border
-                  border-gray-200
-                  rounded-xl
-                  overflow-hidden
-                  bg-white
-                  hover:shadow-lg
-                  transition-all
-                  duration-300
-                "
+                key={product?._id || index}
+                className="group border border-gray-200 rounded-xl overflow-hidden bg-white hover:shadow-lg transition-all duration-300"
               >
-                {/* IMAGE */}
-
                 <div className="relative">
                   <img
                     src={product?.image}
-                    alt={
-                      product?.title ||
-                      "Product"
-                    }
-                    className="
-                      w-full
-                      h-56
-                      object-cover
-                    "
+                    alt={product?.title || "Product"}
+                    className="w-full h-56 object-cover"
                   />
-
-                  {/* REMOVE */}
 
                   <button
                     type="button"
@@ -1687,23 +1034,7 @@ function ShoppingAccount() {
                         );
                       }
                     }}
-                    className="
-                      absolute
-                      top-3
-                      right-3
-                      w-10
-                      h-10
-                      rounded-full
-                      bg-red-500
-                      text-white
-                      flex
-                      items-center
-                      justify-center
-                      shadow-md
-                      hover:bg-red-600
-                      transition
-                      cursor-pointer
-                    "
+                    className="absolute top-3 right-3 w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center shadow-md hover:bg-red-600 transition cursor-pointer"
                     title="Remove from wishlist"
                   >
                     <Heart
@@ -1713,118 +1044,51 @@ function ShoppingAccount() {
                   </button>
                 </div>
 
-                {/* PRODUCT DETAILS */}
-
                 <div className="p-4">
-                  <h3
-                    className="
-                      text-lg
-                      font-bold
-                      text-gray-900
-                      line-clamp-1
-                    "
-                  >
+                  <h3 className="text-lg font-bold text-gray-900 line-clamp-1">
                     {product?.title}
                   </h3>
 
-                  <p
-                    className="
-                      mt-2
-                      text-sm
-                      text-gray-500
-                      line-clamp-2
-                      min-h-[40px]
-                    "
-                  >
+                  <p className="mt-2 text-sm text-gray-500 line-clamp-2 min-h-[40px]">
                     {product?.description}
                   </p>
-
-                  {/* PRICE */}
 
                   <div className="mt-4">
                     {product?.salePrice > 0 ? (
                       <div className="flex items-center gap-2">
-                        <span
-                          className="
-                            text-sm
-                            text-gray-400
-                            line-through
-                          "
-                        >
+                        <span className="text-sm text-gray-400 line-through">
                           ${product?.price}
                         </span>
 
-                        <span
-                          className="
-                            text-xl
-                            font-bold
-                            text-black
-                          "
-                        >
+                        <span className="text-xl font-bold text-black">
                           ${product?.salePrice}
                         </span>
                       </div>
                     ) : (
-                      <span
-                        className="
-                          text-xl
-                          font-bold
-                          text-black
-                        "
-                      >
+                      <span className="text-xl font-bold text-black">
                         ${product?.price}
                       </span>
                     )}
                   </div>
 
-                  {/* STOCK */}
-
                   <div className="mt-2">
                     {product?.totalStock > 0 ? (
-                      <span
-                        className="
-                          text-xs
-                          font-semibold
-                          text-green-600
-                        "
-                      >
+                      <span className="text-xs font-semibold text-green-600">
                         In Stock
                       </span>
                     ) : (
-                      <span
-                        className="
-                          text-xs
-                          font-semibold
-                          text-red-500
-                        "
-                      >
+                      <span className="text-xs font-semibold text-red-500">
                         Out of Stock
                       </span>
                     )}
                   </div>
 
-                  {/* VIEW PRODUCTS */}
-
                   <button
                     type="button"
                     onClick={() =>
-                      navigate(
-                        "/shop/listing"
-                      )
+                      navigate("/shop/listing")
                     }
-                    className="
-                      mt-4
-                      w-full
-                      rounded-lg
-                      bg-black
-                      text-white
-                      py-2.5
-                      text-sm
-                      font-semibold
-                      hover:bg-gray-800
-                      transition
-                      cursor-pointer
-                    "
+                    className="mt-4 w-full rounded-lg bg-black text-white py-2.5 text-sm font-semibold hover:bg-gray-800 transition cursor-pointer"
                   >
                     View Product
                   </button>
@@ -1833,28 +1097,9 @@ function ShoppingAccount() {
             ))}
           </div>
         ) : (
-          /* EMPTY */
-
           <div className="py-16 text-center">
-            <div
-              className="
-                w-20
-                h-20
-                mx-auto
-                rounded-full
-                bg-red-50
-                flex
-                items-center
-                justify-center
-              "
-            >
-              <Heart
-                className="
-                  w-10
-                  h-10
-                  text-red-300
-                "
-              />
+            <div className="w-20 h-20 mx-auto rounded-full bg-red-50 flex items-center justify-center">
+              <Heart className="w-10 h-10 text-red-300" />
             </div>
 
             <h3 className="mt-5 text-xl font-bold">
@@ -1862,29 +1107,15 @@ function ShoppingAccount() {
             </h3>
 
             <p className="mt-2 text-gray-500">
-              Save your favorite products
-              and find them here later.
+              Save your favorite products and find them here later.
             </p>
 
             <button
               type="button"
               onClick={() =>
-                navigate(
-                  "/shop/listing"
-                )
+                navigate("/shop/listing")
               }
-              className="
-                mt-6
-                bg-black
-                text-white
-                px-6
-                py-3
-                rounded-lg
-                font-semibold
-                hover:bg-gray-800
-                transition
-                cursor-pointer
-              "
+              className="mt-6 bg-black text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-800 transition cursor-pointer"
             >
               Start Shopping
             </button>
@@ -1900,30 +1131,9 @@ function ShoppingAccount() {
 
   function SettingsSection() {
     return (
-      <div
-        className="
-          mt-8
-          bg-white
-          border
-          border-gray-100
-          rounded-2xl
-          shadow-sm
-          p-6
-          md:p-8
-        "
-      >
+      <div className="mt-8 bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
         <div className="flex items-center gap-3">
-          <div
-            className="
-              w-11
-              h-11
-              rounded-xl
-              bg-gray-100
-              flex
-              items-center
-              justify-center
-            "
-          >
+          <div className="w-11 h-11 rounded-xl bg-gray-100 flex items-center justify-center">
             <Settings className="w-6 h-6 text-gray-700" />
           </div>
 
@@ -1943,14 +1153,7 @@ function ShoppingAccount() {
             Account Status
           </p>
 
-          <p
-            className="
-              text-sm
-              text-green-600
-              mt-1
-              font-medium
-            "
-          >
+          <p className="text-sm text-green-600 mt-1 font-medium">
             Active
           </p>
         </div>
@@ -1958,25 +1161,9 @@ function ShoppingAccount() {
         <button
           type="button"
           onClick={handleLogout}
-          className="
-            mt-6
-            flex
-            items-center
-            gap-2
-            border
-            border-red-200
-            text-red-600
-            px-5
-            py-3
-            rounded-lg
-            font-semibold
-            hover:bg-red-50
-            transition
-            cursor-pointer
-          "
+          className="mt-6 flex items-center gap-2 border border-red-200 text-red-600 px-5 py-3 rounded-lg font-semibold hover:bg-red-50 transition cursor-pointer"
         >
           <LogOut className="w-5 h-5" />
-
           Logout
         </button>
       </div>
@@ -1988,135 +1175,60 @@ function ShoppingAccount() {
   ===================================================== */
 
   return (
-    <div
-      className="
-        min-h-screen
-        bg-gray-50
-        pt-20
-        pb-12
-      "
-    >
-      <div
-        className="
-          container
-          mx-auto
-          px-4
-          md:px-6
-        "
-      >
-        {/* PAGE TITLE */}
-
+    <div className="min-h-screen bg-gray-50 pt-20 pb-12">
+      <div className="container mx-auto px-4 md:px-6">
         <div className="mb-6">
           <p className="text-sm text-gray-500">
             Home / Account
           </p>
 
-          <h1
-            className="
-              mt-2
-              text-3xl
-              md:text-4xl
-              font-bold
-              text-gray-900
-            "
-          >
+          <h1 className="mt-2 text-3xl md:text-4xl font-bold text-gray-900">
             My Account
           </h1>
         </div>
 
-        {/* PROFILE */}
-
         <ProfileHeader />
-
-        {/* GLOBAL MESSAGE */}
 
         {(message || error) && (
           <div className="mt-4">
             {message && (
-              <div
-                className="
-                  rounded-lg
-                  border
-                  border-green-200
-                  bg-green-50
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-green-700
-                "
-              >
+              <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-700">
                 {message}
               </div>
             )}
 
             {error && (
-              <div
-                className="
-                  rounded-lg
-                  border
-                  border-red-200
-                  bg-red-50
-                  px-4
-                  py-3
-                  text-sm
-                  font-medium
-                  text-red-600
-                "
-              >
+              <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
                 {error}
               </div>
             )}
           </div>
         )}
 
-        {/* BACK */}
-
         {activeSection !== "overview" && (
           <button
             type="button"
             onClick={() => {
-              setActiveSection(
-                "overview"
-              );
-
+              setActiveSection("overview");
               setIsEditing(false);
-
               setMessage("");
               setError("");
             }}
-            className="
-              mt-6
-              text-sm
-              font-semibold
-              text-gray-600
-              hover:text-black
-              cursor-pointer
-            "
+            className="mt-6 text-sm font-semibold text-gray-600 hover:text-black cursor-pointer"
           >
             ← Back to Account
           </button>
         )}
 
-        {/* OVERVIEW */}
-
-        {activeSection === "overview" && (
-          <Overview />
-        )}
-
-        {/* PERSONAL */}
+        {activeSection === "overview" && <Overview />}
 
         {activeSection === "personal" && (
           <PersonalInformation />
         )}
 
-        {/* WISHLIST */}
-
         {activeSection === "wishlist" && (
           <WishlistSection />
         )}
-
-        {/* SECURITY */}
 
         {activeSection === "security" && (
           <SecuritySection
@@ -2135,27 +1247,12 @@ function ShoppingAccount() {
           />
         )}
 
-        {/* SETTINGS */}
-
         {activeSection === "settings" && (
           <SettingsSection />
         )}
 
-        {/* ADDRESS */}
-
         {activeSection === "address" && (
-          <div
-            className="
-              mt-8
-              bg-white
-              border
-              border-gray-100
-              rounded-2xl
-              shadow-sm
-              p-6
-              md:p-8
-            "
-          >
+          <div className="mt-8 bg-white border border-gray-100 rounded-2xl shadow-sm p-6 md:p-8">
             <div className="mb-6">
               <h2 className="text-xl font-bold">
                 My Addresses
