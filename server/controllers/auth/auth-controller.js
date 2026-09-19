@@ -89,8 +89,8 @@ const loginUser = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "none",
       })
       .json({
         success: true,
@@ -118,10 +118,16 @@ const loginUser = async (req, res) => {
 // Logout
 // ===============================
 const logoutUser = (req, res) => {
-  res.clearCookie("token").json({
-    success: true,
-    message: "Logged out successfully!",
-  });
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    })
+    .json({
+      success: true,
+      message: "Logged out successfully!",
+    });
 };
 
 // ===============================
@@ -277,8 +283,8 @@ const updateUserProfile = async (req, res) => {
     res
       .cookie("token", newToken, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
+        sameSite: "none",
       })
       .status(200)
       .json({
