@@ -55,7 +55,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(
   cors({
-   origin: "https://ecommerce-1-a4jj.onrender.com",
+    origin: "https://ecommerce-1-a4jj.onrender.com",
     methods: ["GET", "POST", "DELETE", "PUT"],
     allowedHeaders: [
       "Content-Type",
@@ -71,6 +71,14 @@ app.use(
 app.use(cookieParser());
 
 app.use(express.json());
+
+// ===============================
+// Health Check / Root Route
+// ===============================
+
+app.get("/", (req, res) => {
+  res.status(200).send("Ecommerce Backend is running successfully!");
+});
 
 // ===============================
 // Authentication Routes
