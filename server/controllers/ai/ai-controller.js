@@ -1,89 +1,145 @@
 const { GoogleGenAI } = require("@google/genai");
 const Product = require("../../models/Product");
 
+
+// ============================================================
+// GEMINI SETUP
+// ============================================================
+
+const apiKey = process.env.GEMINI_API_KEY;
+
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey,
 });
 
-// =====================================================
-// HELPERS
-// =====================================================
+const GEMINI_MODEL = "gemini-3.5-flash-lite";
 
-const getSecureImageUrl = (url) => {
-  if (!url) return "";
 
-  return String(url).replace(
-    "http://res.cloudinary.com/",
-    "https://res.cloudinary.com/"
-  );
-};
+// ============================================================
+// HELPER: SECURE IMAGE URL
+// ============================================================
 
-const getEffectivePrice = (product) => {
-  const price = Number(product?.price || 0);
-  const salePrice = Number(product?.salePrice || 0);
+function getSecureImageUrl(image) {
+  if (!image) return "";
+
+  if (typeof image === "string") {
+    return image.replace(/^http:\/\//i, "https://");
+  }
+
+  if (Array.isArray(image)) {
+    const firstImage = image[0];
+
+    if (typeof firstImage === "string") {
+      return firstImage.replace(/^http:\/\//i, "https://");
+    }
+
+    if (firstImage?.url) {
+      return firstImage.url.replace(/^http:\/\//i, "https://");
+    }
+
+    if (firstImage?.secure_url) {
+      return firstImage.secure_url;
+    }
+  }
+
+  if (image?.secure_url) {
+    return image.secure_url;
+  }
+
+  if (image?.url) {
+    return image.url.replace(/^http:\/\//i, "https://");
+  }
+
+  return "";
+}
+
+
+// ============================================================
+// HELPER: EFFECTIVE PRICE
+// ============================================================
+
+function getEffectivePrice(product) {
+  const salePrice = Number(product.salePrice || 0);
+  const price = Number(product.price || 0);
 
   if (salePrice > 0 && salePrice < price) {
     return salePrice;
   }
 
   return price;
-};
+}
 
-// =====================================================
-// EXTRACT BUDGET FROM USER MESSAGE
-// =====================================================
 
-const extractBudget = (message) => {
+// ============================================================
+// HELPER: EXTRACT BUDGET
+// ============================================================
+
+function extractBudget(message) {
   if (!message) return null;
 
   const text = message.toLowerCase();
 
-  const hasBudgetKeyword =
-    text.includes("under") ||
-    text.includes("below") ||
-    text.includes("less than") ||
-    text.includes("within") ||
-    text.includes("upto") ||
-    text.includes("up to") ||
-    text.includes("maximum") ||
-    text.includes("max");
+  const budgetKeywords = [
+    "under",
+    "below",
+    "within",
+    "less than",
+    "upto",
+    "up to",
+    "budget",
+    "ke andar",
+    "tak",
+    "se kam",
+    "maximum",
+    "max",
+  ];
+
+  const hasBudgetKeyword = budgetKeywords.some((keyword) =>
+    text.includes(keyword)
+  );
 
   if (!hasBudgetKeyword) {
     return null;
   }
 
-  // Example:
-  // ₹10000
-  // ₹10,000
-  // 10000
-  // 10k
-  // rs 10000
-  const match = text.match(
-    /(?:₹|rs\.?|inr)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k)?/i
+  // ₹10,000 / ₹10000 / 10000
+  const rupeeMatch = text.match(
+    /₹\s*([\d,]+(?:\.\d+)?)/
   );
 
-  if (!match) {
-    return null;
+  if (rupeeMatch) {
+    return Number(rupeeMatch[1].replace(/,/g, ""));
   }
 
-  let amount = Number(match[1].replace(/,/g, ""));
+  // 10k / 5k
+  const kMatch = text.match(
+    /(\d+(?:\.\d+)?)\s*k\b/
+  );
 
-  if (match[2]?.toLowerCase() === "k") {
-    amount = amount * 1000;
+  if (kMatch) {
+    return Number(kMatch[1]) * 1000;
   }
 
-  if (!Number.isFinite(amount) || amount <= 0) {
-    return null;
+  // normal number
+  const numberMatch = text.match(
+    /\b(\d+(?:,\d{3})*(?:\.\d+)?)\b/
+  );
+
+  if (numberMatch) {
+    return Number(
+      numberMatch[1].replace(/,/g, "")
+    );
   }
 
-  return amount;
-};
+  return null;
+}
 
-// =====================================================
-// EXTRACT CATEGORY FROM USER MESSAGE
-// =====================================================
 
-const extractCategory = (message) => {
+// ============================================================
+// HELPER: EXTRACT CATEGORY
+// ============================================================
+
+function extractCategory(message) {
   if (!message) return null;
 
   const text = message.toLowerCase();
@@ -104,374 +160,558 @@ const extractCategory = (message) => {
   }
 
   return null;
-};
+}
 
-// =====================================================
+
+// ============================================================
+// HELPER: GREETING CHECK
+// ============================================================
+
+function isGreetingMessage(message) {
+  if (!message) return false;
+
+  const text = message.toLowerCase().trim();
+
+  const greetings = [
+    "hi",
+    "hii",
+    "hiii",
+    "hiiii",
+    "hello",
+    "hey",
+    "heyy",
+    "heyyy",
+    "namaste",
+    "namaskar",
+
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "good night",
+
+    "thanks",
+    "thank you",
+    "thankyou",
+    "thx",
+  ];
+
+  return greetings.includes(text);
+}
+
+
+// ============================================================
 // AI CHAT
-// =====================================================
+// ============================================================
 
 const chatWithAI = async (req, res) => {
   try {
     const { message } = req.body;
 
-    if (!message || !message.trim()) {
+    // --------------------------------------------------------
+    // VALIDATION
+    // --------------------------------------------------------
+
+    if (!message || typeof message !== "string") {
       return res.status(400).json({
         success: false,
-        message: "Message is required",
+        message: "Please enter a message.",
+        products: [],
+        productsCount: 0,
       });
     }
 
-    const userMessage = message.trim();
+    const trimmedMessage = message.trim();
 
-    // =================================================
-    // DETECT USER REQUIREMENTS
-    // =================================================
+    if (!trimmedMessage) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a message.",
+        products: [],
+        productsCount: 0,
+      });
+    }
 
-    const budget = extractBudget(userMessage);
-    const category = extractCategory(userMessage);
 
-    console.log("AI User Question:", userMessage);
-    console.log("Detected Budget:", budget);
-    console.log("Detected Category:", category);
+    // ========================================================
+    // GREETING
+    // ========================================================
+    // IMPORTANT:
+    // "hey", "hi", "hello" etc. par products nahi dikhayenge.
+    // Gemini API call bhi nahi lagegi.
+    // ========================================================
 
-    // =================================================
-    // GET PRODUCTS FROM DATABASE
-    // =================================================
+    if (isGreetingMessage(trimmedMessage)) {
+      return res.status(200).json({
+        success: true,
 
-    const products = await Product.find({})
+        message:
+          "Hey there! 👋 Welcome to our store. How can I help you shop today? We have great products across electronics, fashion, footwear, and more!",
+
+        products: [],
+
+        productsCount: 0,
+
+        filters: {
+          category: null,
+          budget: null,
+        },
+      });
+    }
+
+
+    // ========================================================
+    // EXTRACT USER REQUIREMENTS
+    // ========================================================
+
+    const budget = extractBudget(trimmedMessage);
+
+    const category = extractCategory(trimmedMessage);
+
+
+    console.log("========================================");
+    console.log("AI USER MESSAGE:", trimmedMessage);
+    console.log("AI CATEGORY:", category);
+    console.log("AI BUDGET:", budget);
+    console.log("========================================");
+
+
+    // ========================================================
+    // FETCH PRODUCTS
+    // ========================================================
+
+    let products = await Product.find({})
       .select(
         "_id title description category brand image price salePrice totalStock averageReview"
       )
       .limit(200)
       .lean();
 
-    // =================================================
-    // FILTER PRODUCTS
-    // =================================================
 
-    let filteredProducts = products;
-
-    // -------------------------------------------------
+    // ========================================================
     // CATEGORY FILTER
-    // -------------------------------------------------
+    // ========================================================
 
     if (category) {
-      filteredProducts = filteredProducts.filter((product) => {
-        return (
-          String(product?.category || "").toLowerCase() ===
-          category.toLowerCase()
-        );
+      const categoryLower = category.toLowerCase();
+
+      products = products.filter((product) => {
+        const productCategory =
+          String(product.category || "").toLowerCase();
+
+        return productCategory === categoryLower;
       });
     }
 
-    // -------------------------------------------------
-    // BUDGET FILTER
-    // -------------------------------------------------
 
-    if (budget) {
-      filteredProducts = filteredProducts.filter((product) => {
-        const effectivePrice = getEffectivePrice(product);
+    // ========================================================
+    // BUDGET FILTER
+    // ========================================================
+
+    if (budget !== null) {
+      products = products.filter((product) => {
+        const effectivePrice =
+          getEffectivePrice(product);
 
         return effectivePrice <= budget;
       });
     }
 
-    // -------------------------------------------------
-    // ONLY IN-STOCK PRODUCTS
-    // -------------------------------------------------
 
-    filteredProducts = filteredProducts.filter((product) => {
-      return Number(product?.totalStock || 0) > 0;
+    // ========================================================
+    // STOCK FILTER
+    // ========================================================
+
+    products = products.filter((product) => {
+      const stock = Number(product.totalStock || 0);
+
+      return stock > 0;
     });
 
-    console.log(
-      "Products Before Filtering:",
-      products.length
-    );
 
-    console.log(
-      "Products After Filtering:",
-      filteredProducts.length
-    );
+    // ========================================================
+    // NO PRODUCTS FOUND
+    // ========================================================
 
-    // =================================================
-    // NO PRODUCT FOUND
-    // =================================================
-
-    if (filteredProducts.length === 0) {
+    if (products.length === 0) {
       let noProductMessage =
-        "Sorry, requested products are not available.";
+        "Sorry, I couldn't find matching products";
 
-      if (category && budget) {
-        noProductMessage = `Sorry, ${category} category mein ₹${budget.toLocaleString(
-          "en-IN"
-        )} ke under koi product available nahi hai.`;
+      if (category && budget !== null) {
+        noProductMessage +=
+          ` in the ${category} category under ₹${budget.toLocaleString(
+            "en-IN"
+          )}.`;
       } else if (category) {
-        noProductMessage = `Sorry, ${category} category mein abhi koi product available nahi hai.`;
-      } else if (budget) {
-        noProductMessage = `Sorry, ₹${budget.toLocaleString(
-          "en-IN"
-        )} ke under koi product available nahi hai.`;
+        noProductMessage +=
+          ` in the ${category} category.`;
+      } else if (budget !== null) {
+        noProductMessage +=
+          ` under ₹${budget.toLocaleString("en-IN")}.`;
+      } else {
+        noProductMessage += ".";
       }
 
       return res.status(200).json({
         success: true,
-        message: noProductMessage,
+
+        message:
+          noProductMessage +
+          " Try another category or budget.",
+
         products: [],
+
         productsCount: 0,
+
+        filters: {
+          category,
+          budget,
+        },
       });
     }
 
-    // =================================================
-    // CREATE PRODUCT CONTEXT FOR AI
-    // =================================================
 
-    const productContext = filteredProducts
-      .map((product, index) => {
-        const effectivePrice = getEffectivePrice(product);
+    // ========================================================
+    // PRODUCT CARDS FOR FRONTEND
+    // ========================================================
 
-        return `
-Product ${index + 1}
-Product ID: ${product._id}
-Title: ${product.title || ""}
-Category: ${product.category || ""}
-Brand: ${product.brand || ""}
-Original Price: ₹${product.price || 0}
-Sale Price: ₹${product.salePrice || 0}
-Effective Price: ₹${effectivePrice}
-Stock: ${product.totalStock || 0}
-Rating: ${product.averageReview || 0}
-Description: ${product.description || ""}
-`;
-      })
-      .join("\n");
+    const productCards = products
+      .slice(0, 4)
+      .map((product) => {
+        const effectivePrice =
+          getEffectivePrice(product);
 
-    // =================================================
-    // AI PROMPT
-    // =================================================
+        return {
+          _id: product._id,
+
+          title: product.title || "",
+
+          description:
+            product.description || "",
+
+          category:
+            product.category || "",
+
+          brand:
+            product.brand || "",
+
+          image:
+            getSecureImageUrl(product.image),
+
+          price:
+            Number(product.price || 0),
+
+          salePrice:
+            Number(product.salePrice || 0),
+
+          effectivePrice,
+
+          totalStock:
+            Number(product.totalStock || 0),
+
+          averageReview:
+            Number(product.averageReview || 0),
+        };
+      });
+
+
+    // ========================================================
+    // PRODUCTS DATA FOR GEMINI
+    // ========================================================
+
+    const productsForAI = products
+      .slice(0, 50)
+      .map((product) => {
+        const effectivePrice =
+          getEffectivePrice(product);
+
+        return {
+          id: String(product._id),
+
+          title: product.title,
+
+          category: product.category,
+
+          brand: product.brand,
+
+          price: Number(product.price || 0),
+
+          salePrice:
+            Number(product.salePrice || 0),
+
+          effectivePrice,
+
+          stock:
+            Number(product.totalStock || 0),
+
+          rating:
+            Number(product.averageReview || 0),
+
+          description:
+            product.description || "",
+        };
+      });
+
+
+    // ========================================================
+    // GEMINI PROMPT
+    // ========================================================
 
     const prompt = `
-You are an AI shopping assistant for an Indian e-commerce website.
+You are an AI shopping assistant for an e-commerce website.
 
-Customer question:
-"${userMessage}"
-
-You MUST answer ONLY using the products provided below.
+USER MESSAGE:
+"${trimmedMessage}"
 
 IMPORTANT RULES:
 
-1. Never invent a product.
-2. Never invent a price.
-3. Never invent a brand.
-4. Never invent a rating.
-5. Never invent stock.
-6. Never invent product details.
-7. Only recommend products from the provided product list.
-8. All provided products are already filtered according to the customer's requirements.
-9. If a budget is mentioned, do NOT recommend anything above that budget.
-10. If a category is mentioned, recommend only products from that category.
-11. Do not recommend products that are out of stock.
-12. If sale price is available and lower than original price, mention sale price.
-13. Use Indian Rupees ₹.
-14. Keep the answer short and friendly.
-15. Recommend maximum 4 products.
-16. Do not create markdown tables.
-17. Do not create fake product links.
-18. Do not mention products that are not in the provided list.
+1. Only recommend products from the PRODUCT DATA below.
+2. Never invent a product.
+3. Never invent a price.
+4. Never invent stock.
+5. If a budget is provided, recommend ONLY products within that budget.
+6. If a category is provided, prefer ONLY products from that category.
+7. Only recommend products that are currently in stock.
+8. Be helpful and concise.
+9. Reply naturally in the same language/style as the user.
+10. Do not show product IDs to the user.
+11. Do not create fake specifications.
+12. If there are no suitable products, clearly say that no matching product was found.
+13. The frontend will separately display product cards, so do not create complicated product tables.
 
-AVAILABLE FILTERED PRODUCTS:
+FILTERS:
 
-${productContext}
+Category:
+${category || "No specific category"}
 
-Now answer the customer naturally.
+Maximum Budget:
+${budget !== null ? `₹${budget}` : "No specific budget"}
 
-Do not include product JSON.
-Do not include product IDs.
-Just give a short helpful shopping response.
+PRODUCT DATA:
+
+${JSON.stringify(productsForAI, null, 2)}
+
+Now answer the user's message naturally.
 `;
 
-    // =================================================
-    // GEMINI AI REQUEST
-    // =================================================
 
-    let response;
-    let lastError;
+    // ========================================================
+    // GEMINI API
+    // ========================================================
 
+    if (!apiKey) {
+      console.error(
+        "GEMINI_API_KEY is missing."
+      );
+
+      return res.status(500).json({
+        success: false,
+
+        message:
+          "AI service is not configured.",
+
+        products: [],
+      });
+    }
+
+
+    let aiResponse = null;
+
+    let lastError = null;
+
+
+    // Keep existing retry behavior
     for (let attempt = 1; attempt <= 3; attempt++) {
       try {
         console.log(
           `Gemini AI attempt ${attempt}/3`
         );
 
-        response = await ai.models.generateContent({
-          model: "gemini-3.5-flash-lite",
-          contents: prompt,
-        });
+        const result =
+          await ai.models.generateContent({
+            model: GEMINI_MODEL,
 
-        console.log(
-          `Gemini AI attempt ${attempt} successful`
+            contents: prompt,
+          });
+
+
+        aiResponse =
+          result?.text || "";
+
+
+        if (aiResponse) {
+          break;
+        }
+
+
+        throw new Error(
+          "Gemini returned an empty response."
         );
-
-        break;
       } catch (error) {
         lastError = error;
 
         console.error(
           `Gemini AI attempt ${attempt} failed:`,
-          error.message
+          error?.message || error
         );
 
+
         if (attempt < 3) {
-          const delay = attempt * 2000;
-
-          console.log(
-            `Retrying Gemini AI after ${
-              delay / 1000
-            } seconds...`
+          await new Promise((resolve) =>
+            setTimeout(resolve, 1000)
           );
-
-          await new Promise((resolve) => {
-            setTimeout(resolve, delay);
-          });
         }
       }
     }
 
-    if (!response) {
-      throw lastError;
+
+    // ========================================================
+    // GEMINI FAILED
+    // ========================================================
+
+    if (!aiResponse) {
+      console.error(
+        "Gemini final error:",
+        lastError
+      );
+
+      return res.status(500).json({
+        success: false,
+
+        message:
+          "AI response failed. Please try again.",
+
+        error:
+          lastError?.message ||
+          "Unknown AI error",
+
+        products: [],
+      });
     }
 
-    // =================================================
-    // PRODUCT DATA FOR FRONTEND
-    // =================================================
 
-    const productCards = filteredProducts
-      .slice(0, 4)
-      .map((product) => ({
-        _id: product._id,
-        title: product.title,
-        category: product.category,
-        brand: product.brand,
-        image: getSecureImageUrl(product.image),
-        price: Number(product.price || 0),
-        salePrice: Number(product.salePrice || 0),
-        effectivePrice: getEffectivePrice(product),
-        totalStock: Number(product.totalStock || 0),
-        averageReview: Number(
-          product.averageReview || 0
-        ),
-      }));
-
-    // =================================================
+    // ========================================================
     // SUCCESS RESPONSE
-    // =================================================
+    // ========================================================
 
     return res.status(200).json({
       success: true,
-      message:
-        response.text ||
-        "Sorry, I could not generate a response.",
+
+      message: aiResponse,
 
       products: productCards,
 
-      productsCount: productCards.length,
+      productsCount: products.length,
 
       filters: {
-        category: category || null,
-        budget: budget || null,
+        category,
+        budget,
       },
     });
   } catch (error) {
-    console.error("AI Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "AI response failed",
-      error: error.message,
-    });
-  }
-};
-
-// =====================================================
-// LIST AVAILABLE GEMINI MODELS
-// =====================================================
-
-const listAIModels = async (req, res) => {
-  try {
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return res.status(500).json({
-        success: false,
-        message: "GEMINI_API_KEY is missing",
-      });
-    }
-
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(
-        apiKey
-      )}&pageSize=100`
-    );
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      console.error(
-        "Gemini Models API Error:",
-        data
-      );
-
-      return res.status(response.status).json({
-        success: false,
-        message: "Gemini Models API failed",
-        error: data,
-      });
-    }
-
-    const models = (data.models || []).map(
-      (model) => ({
-        name: model.name,
-        baseModelId: model.baseModelId,
-        version: model.version,
-        displayName: model.displayName,
-        supportedGenerationMethods:
-          model.supportedGenerationMethods || [],
-        inputTokenLimit:
-          model.inputTokenLimit,
-        outputTokenLimit:
-          model.outputTokenLimit,
-      })
-    );
-
-    const generateContentModels =
-      models.filter((model) =>
-        model.supportedGenerationMethods.includes(
-          "generateContent"
-        )
-      );
-
-    return res.status(200).json({
-      success: true,
-      totalModels: models.length,
-      generateContentModels,
-    });
-  } catch (error) {
     console.error(
-      "List Gemini Models Error:",
+      "AI Controller Error:",
       error
     );
 
     return res.status(500).json({
       success: false,
-      message: "Unable to fetch Gemini models",
-      error: error.message,
+
+      message:
+        "Something went wrong while processing your request.",
+
+      error:
+        error?.message || "Unknown error",
+
+      products: [],
     });
   }
 };
 
-// =====================================================
-// EXPORT
-// =====================================================
+
+// ============================================================
+// LIST AVAILABLE GEMINI MODELS
+// ============================================================
+
+const listAIModels = async (req, res) => {
+  try {
+    if (!apiKey) {
+      return res.status(500).json({
+        success: false,
+        message:
+          "GEMINI_API_KEY is missing.",
+      });
+    }
+
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(
+        apiKey
+      )}`
+    );
+
+
+    const data = await response.json();
+
+
+    if (!response.ok) {
+      return res.status(response.status).json({
+        success: false,
+
+        message:
+          "Unable to fetch Gemini models",
+
+        error:
+          data?.error ||
+          data,
+      });
+    }
+
+
+    const models =
+      data?.models || [];
+
+
+    const generateContentModels =
+      models.filter((model) =>
+        Array.isArray(
+          model.supportedGenerationMethods
+        ) &&
+        model.supportedGenerationMethods.includes(
+          "generateContent"
+        )
+      );
+
+
+    return res.status(200).json({
+      success: true,
+
+      totalModels: models.length,
+
+      generateContentModels,
+    });
+  } catch (error) {
+    console.error(
+      "List AI Models Error:",
+      error
+    );
+
+    return res.status(500).json({
+      success: false,
+
+      message:
+        "Unable to fetch Gemini models",
+
+      error:
+        error?.message ||
+        "Unknown error",
+    });
+  }
+};
+
+
+// ============================================================
+// EXPORTS
+// ============================================================
 
 module.exports = {
   chatWithAI,

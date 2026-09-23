@@ -456,7 +456,7 @@ function AIChatbot() {
             right-6
             z-50
             flex
-            h-[650px]
+            h-[calc(100vh-120px)]
             w-[390px]
             max-w-[calc(100vw-24px)]
             flex-col
