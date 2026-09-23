@@ -73,9 +73,9 @@ Now answer the customer based only on the available products.
 `;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
-    });
+  model: "gemini-3.6-flash",
+  contents: prompt,
+});
 
     return res.status(200).json({
       success: true,
