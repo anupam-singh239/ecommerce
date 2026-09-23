@@ -32,7 +32,7 @@ function AIChatbot() {
 
     try {
       const response = await fetch(
-        "https://ecommerce-1-a4jj.onrender.com",
+        "https://ecommerce-h0hd.onrender.com/api/ai/chat",
         {
           method: "POST",
           headers: {
@@ -44,14 +44,29 @@ function AIChatbot() {
         }
       );
 
+      // Check HTTP response first
+      if (!response.ok) {
+        const errorText = await response.text();
+
+        console.error("AI API Error:", response.status, errorText);
+
+        throw new Error(
+          `AI API failed with status ${response.status}`
+        );
+      }
+
       const data = await response.json();
+
+      console.log("AI RESPONSE:", data);
 
       if (data.success) {
         setMessages((prev) => [
           ...prev,
           {
             role: "ai",
-            text: data.message,
+            text:
+              data.message ||
+              "I received your request, but no response was returned.",
           },
         ]);
       } else {
@@ -59,7 +74,9 @@ function AIChatbot() {
           ...prev,
           {
             role: "ai",
-            text: "Sorry, I couldn't process your request.",
+            text:
+              data.message ||
+              "Sorry, I couldn't process your request.",
           },
         ]);
       }
@@ -112,7 +129,10 @@ function AIChatbot() {
           "
         >
           <Sparkles size={20} />
-          <span className="font-semibold">Ask AI</span>
+
+          <span className="font-semibold">
+            Ask AI
+          </span>
         </button>
       )}
 
@@ -174,12 +194,14 @@ function AIChatbot() {
                     : "justify-start"
                 }`}
               >
+                {/* AI Icon */}
                 {item.role === "ai" && (
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-600">
                     <Bot size={16} />
                   </div>
                 )}
 
+                {/* Message */}
                 <div
                   className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm ${
                     item.role === "user"
@@ -190,6 +212,7 @@ function AIChatbot() {
                   {item.text}
                 </div>
 
+                {/* User Icon */}
                 {item.role === "user" && (
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-gray-600">
                     <User size={16} />
@@ -198,6 +221,7 @@ function AIChatbot() {
               </div>
             ))}
 
+            {/* Loading */}
             {loading && (
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-blue-600">
@@ -217,7 +241,9 @@ function AIChatbot() {
               <input
                 type="text"
                 value={message}
-                onChange={(event) => setMessage(event.target.value)}
+                onChange={(event) =>
+                  setMessage(event.target.value)
+                }
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about products..."
                 disabled={loading}
