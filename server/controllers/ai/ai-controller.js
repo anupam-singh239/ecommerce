@@ -100,7 +100,7 @@ Now answer the customer based only on the available products.
         console.log(`Gemini AI attempt ${attempt}/3`);
 
         response = await ai.models.generateContent({
-          model: "gemini-3.6-flash",
+          model: "gemini-3.5-flash-lite",
           contents: prompt,
         });
 
