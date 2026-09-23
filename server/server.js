@@ -1,91 +1,219 @@
-const { GoogleGenAI } = require("@google/genai");
-const Product = require("../../models/Product");
+const dns = require("dns");
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+// MongoDB Atlas SRV DNS resolution
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+require("dotenv").config();
+
+const express = require("express");
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
+
+const authRouter = require("./routes/auth/auth-routes");
+
+// ===============================
+// Admin Routes
+// ===============================
+
+const adminDashboardRouter = require("./routes/admin/dashboard-routes");
+const adminProductsRouter = require("./routes/admin/products-routes");
+const adminOrderRouter = require("./routes/admin/order-routes");
+const adminUserRouter = require("./routes/admin/user-routes");
+const adminOfferRouter = require("./routes/admin/offer-routes");
+
+const aiRouter = require("./routes/ai/ai-routes");
+
+// ===============================
+// Shop Routes
+// ===============================
+
+const shopProductsRouter = require("./routes/shop/products-routes");
+const shopCartRouter = require("./routes/shop/cart-routes");
+const shopAddressRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
+const shopSearchRouter = require("./routes/shop/search-routes");
+const shopReviewRouter = require("./routes/shop/review-routes");
+const shopWishlistRouter = require("./routes/shop/wishlist-routes");
+const shopCouponRouter = require("./routes/shop/coupon-routes");
+
+// ===============================
+// Common Routes
+// ===============================
+
+const commonFeatureRouter = require("./routes/common/feature-routes");
+
+// ===============================
+// Express App
+// ===============================
+
+const app = express();
+
+const PORT = process.env.PORT || 5000;
+
+// ===============================
+// Middleware
+// ===============================
+
+app.use(
+  cors({
+    origin: "https://ecommerce-1-a4jj.onrender.com",
+    methods: ["GET", "POST", "DELETE", "PUT"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "Cache-Control",
+      "Expires",
+      "Pragma",
+    ],
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
+
+app.use(express.json());
+
+// ===============================
+// Health Check / Root Route
+// ===============================
+
+app.get("/", (req, res) => {
+  res.status(200).send("Ecommerce Backend is running successfully!");
 });
 
-const chatWithAI = async (req, res) => {
-  try {
-    const { message } = req.body;
+// ===============================
+// Authentication Routes
+// ===============================
 
-    if (!message || !message.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: "Message is required",
-      });
-    }
+app.use("/api/auth", authRouter);
 
-    // Get products from MongoDB
-    const products = await Product.find({})
-      .select(
-        "title description category brand price salePrice totalStock averageReview"
-      )
-      .limit(100)
-      .lean();
+// ===============================
+// Admin Routes
+// ===============================
 
-    // Prepare product information for AI
-    const productContext = products
-      .map((product) => {
-        return `
-Product ID: ${product._id}
-Title: ${product.title || ""}
-Category: ${product.category || ""}
-Brand: ${product.brand || ""}
-Price: ₹${product.price || 0}
-Sale Price: ₹${product.salePrice || 0}
-Stock: ${product.totalStock || 0}
-Rating: ${product.averageReview || 0}
-Description: ${product.description || ""}
-`;
-      })
-      .join("\n");
+// Dashboard
+app.use(
+  "/api/admin/dashboard",
+  adminDashboardRouter
+);
 
-    const prompt = `
-You are an AI shopping assistant for an e-commerce website.
+// Products
+app.use(
+  "/api/admin/products",
+  adminProductsRouter
+);
 
-Your job is to help customers find products from the products available in the database.
+// Orders
+app.use(
+  "/api/admin/orders",
+  adminOrderRouter
+);
 
-IMPORTANT RULES:
-1. Only recommend products that exist in the provided product list.
-2. Do not invent products.
-3. Do not invent prices, brands, ratings, stock or product details.
-4. If the requested product is not available, clearly say that it is not available.
-5. Keep the answer simple and useful.
-6. Mention product name, price and relevant details when recommending products.
-7. If multiple products match, show the most relevant products.
-8. Answer the customer naturally.
+// Users
+app.use(
+  "/api/admin/users",
+  adminUserRouter
+);
 
-AVAILABLE PRODUCTS:
-${productContext}
+// Offers & Coupons
+app.use(
+  "/api/admin/offers",
+  adminOfferRouter
+);
 
-CUSTOMER QUESTION:
-${message}
+// ===============================
+// AI Routes
+// ===============================
 
-Now answer the customer based only on the available products.
-`;
+app.use(
+  "/api/ai",
+  aiRouter
+);
 
-    const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
-      contents: prompt,
+// ===============================
+// Shop Routes
+// ===============================
+
+// Products
+app.use(
+  "/api/shop/products",
+  shopProductsRouter
+);
+
+// Cart
+app.use(
+  "/api/shop/cart",
+  shopCartRouter
+);
+
+// Address
+app.use(
+  "/api/shop/address",
+  shopAddressRouter
+);
+
+// Orders
+app.use(
+  "/api/shop/order",
+  shopOrderRouter
+);
+
+// Search
+app.use(
+  "/api/shop/search",
+  shopSearchRouter
+);
+
+// Reviews
+app.use(
+  "/api/shop/review",
+  shopReviewRouter
+);
+
+// Wishlist
+app.use(
+  "/api/shop/wishlist",
+  shopWishlistRouter
+);
+
+// Customer Coupon
+app.use(
+  "/api/shop/coupon",
+  shopCouponRouter
+);
+
+// ===============================
+// Common Routes
+// ===============================
+
+app.use(
+  "/api/common/feature",
+  commonFeatureRouter
+);
+
+// ===============================
+// MongoDB Connection + Start Server
+// ===============================
+
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB connected");
+
+    app.listen(PORT, () => {
+      console.log(
+        `Server is now running on port ${PORT}`
+      );
     });
+  })
+  .catch((error) => {
+    console.error(
+      "MongoDB connection error:",
+      error.message
+    );
 
-    return res.status(200).json({
-      success: true,
-      message: response.text,
-      productsCount: products.length,
-    });
-  } catch (error) {
-    console.error("AI Error:", error);
-
-    return res.status(500).json({
-      success: false,
-      message: "AI response failed",
-      error: error.message,
-    });
-  }
-};
-
-module.exports = {
-  chatWithAI,
-};
+    console.error(
+      "Server was NOT started because MongoDB connection failed."
+    );
+  });
