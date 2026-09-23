@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 
 import ProductDetailsDialog from "@/components/shopping-view/product-details";
 import ShoppingFooter from "@/components/shopping-view/footer";
+import AIChatbot from "@/components/ai/ai-chatbot";
 
 import {
   fetchAllFilteredProducts,
@@ -1769,6 +1770,8 @@ function Home() {
       ===================================================== */}
 
       <ShoppingFooter />
+      {/* AI CHATBOT */}
+<AIChatbot />
 
     </div>
   );
