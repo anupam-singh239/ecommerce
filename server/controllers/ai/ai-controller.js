@@ -5,11 +5,14 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
+// =====================================================
+// AI CHAT
+// =====================================================
+
 const chatWithAI = async (req, res) => {
   try {
     const { message } = req.body;
 
-    // Check message
     if (!message || !message.trim()) {
       return res.status(400).json({
         success: false,
@@ -17,9 +20,9 @@ const chatWithAI = async (req, res) => {
       });
     }
 
-    // ==========================================
+    // =================================================
     // GET PRODUCTS FROM MONGODB
-    // ==========================================
+    // =================================================
 
     const products = await Product.find({})
       .select(
@@ -28,9 +31,9 @@ const chatWithAI = async (req, res) => {
       .limit(100)
       .lean();
 
-    // ==========================================
-    // CONVERT PRODUCTS INTO AI CONTEXT
-    // ==========================================
+    // =================================================
+    // CREATE PRODUCT CONTEXT
+    // =================================================
 
     const productContext = products
       .map((product) => {
@@ -48,9 +51,9 @@ Description: ${product.description || ""}
       })
       .join("\n");
 
-    // ==========================================
+    // =================================================
     // AI PROMPT
-    // ==========================================
+    // =================================================
 
     const prompt = `
 You are an AI shopping assistant for an e-commerce website.
@@ -60,22 +63,25 @@ Your job is to help customers find products from the products available in the d
 IMPORTANT RULES:
 
 1. Only recommend products that exist in the provided product list.
-2. Do not invent products.
-3. Do not invent prices, brands, ratings, stock or product details.
-4. If the requested product is not available, clearly say that it is not available.
-5. Keep the answer simple and useful.
-6. Mention product name, price and relevant details when recommending products.
-7. If multiple products match, show the most relevant products.
-8. Answer the customer naturally.
-9. If the customer asks for products under a specific budget, only recommend products within that budget.
-10. If the customer asks for a category, only recommend products from that category.
-11. If the customer asks for a rating, use the available averageReview value.
-12. Do not claim a product is in stock if totalStock is 0.
-13. If salePrice is greater than 0 and lower than price, mention the sale price.
-14. If no product matches the customer's request, clearly say that no matching product was found.
-15. Never create fake product recommendations.
-16. Use Indian Rupees (₹) when mentioning prices.
-17. Keep recommendations short and easy to understand.
+2. Never invent products.
+3. Never invent prices.
+4. Never invent brands.
+5. Never invent ratings.
+6. Never invent stock.
+7. Never invent product details.
+8. If the requested product is not available, clearly say that it is not available.
+9. Keep the answer simple and useful.
+10. Mention product name, price and relevant details when recommending products.
+11. If multiple products match, show the most relevant products.
+12. Answer the customer naturally.
+13. If the customer asks for products under a specific budget, only recommend products within that budget.
+14. If the customer asks for a category, only recommend products from that category.
+15. If the customer asks for a rating, use the available averageReview value.
+16. Do not claim a product is in stock if totalStock is 0.
+17. If salePrice exists and is lower than price, mention the sale price.
+18. If no matching product exists, clearly tell the customer.
+19. Use Indian Rupees (₹) for prices.
+20. Keep the response short and easy to understand.
 
 AVAILABLE PRODUCTS:
 
@@ -85,12 +91,12 @@ CUSTOMER QUESTION:
 
 ${message}
 
-Now answer the customer based only on the available products.
+Answer the customer based ONLY on the available products.
 `;
 
-    // ==========================================
-    // GEMINI AI REQUEST WITH RETRY
-    // ==========================================
+    // =================================================
+    // GEMINI REQUEST WITH RETRY
+    // =================================================
 
     let response;
     let lastError;
@@ -115,7 +121,6 @@ Now answer the customer based only on the available products.
           error.message
         );
 
-        // Retry only if another attempt is available
         if (attempt < 3) {
           const delay = attempt * 2000;
 
@@ -130,17 +135,17 @@ Now answer the customer based only on the available products.
       }
     }
 
-    // ==========================================
+    // =================================================
     // ALL RETRIES FAILED
-    // ==========================================
+    // =================================================
 
     if (!response) {
       throw lastError;
     }
 
-    // ==========================================
-    // SEND SUCCESS RESPONSE
-    // ==========================================
+    // =================================================
+    // SUCCESS
+    // =================================================
 
     return res.status(200).json({
       success: true,
@@ -150,10 +155,6 @@ Now answer the customer based only on the available products.
       productsCount: products.length,
     });
   } catch (error) {
-    // ==========================================
-    // ERROR HANDLING
-    // ==========================================
-
     console.error("AI Error:", error);
 
     return res.status(500).json({
@@ -164,6 +165,43 @@ Now answer the customer based only on the available products.
   }
 };
 
+// =====================================================
+// LIST AVAILABLE GEMINI MODELS
+// =====================================================
+
+const listAIModels = async (req, res) => {
+  try {
+    const models = [];
+
+    for await (const model of ai.models.list()) {
+      models.push({
+        name: model.name,
+        displayName: model.displayName,
+        supportedActions: model.supportedActions,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      count: models.length,
+      models,
+    });
+  } catch (error) {
+    console.error("List Gemini Models Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch Gemini models",
+      error: error.message,
+    });
+  }
+};
+
+// =====================================================
+// EXPORT
+// =====================================================
+
 module.exports = {
   chatWithAI,
+  listAIModels,
 };
