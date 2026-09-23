@@ -10,7 +10,7 @@ const router = express.Router();
 // AI Chat
 router.post("/chat", chatWithAI);
 
-// Check available Gemini models
+// Gemini Models Diagnostic
 router.get("/models", listAIModels);
 
 module.exports = router;

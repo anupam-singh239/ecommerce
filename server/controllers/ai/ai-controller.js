@@ -13,7 +13,6 @@ const chatWithAI = async (req, res) => {
   try {
     const { message } = req.body;
 
-    // Check message
     if (!message || !message.trim()) {
       return res.status(400).json({
         success: false,
@@ -96,7 +95,7 @@ Answer the customer based ONLY on the available products.
 `;
 
     // =================================================
-    // GEMINI REQUEST WITH RETRY
+    // GEMINI AI REQUEST WITH RETRY
     // =================================================
 
     let response;
@@ -187,7 +186,7 @@ const listAIModels = async (req, res) => {
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(
         apiKey
-      )}`
+      )}&pageSize=100`
     );
 
     const data = await response.json();
@@ -209,26 +208,26 @@ const listAIModels = async (req, res) => {
     // ALL MODELS
     // =================================================
 
-    const models = (data.models || []).map(
-      (model) => ({
-        name: model.name,
-        baseModelId: model.baseModelId,
-        displayName: model.displayName,
-        supportedActions:
-          model.supportedActions || [],
-      })
+    const models = (data.models || []).map((model) => ({
+      name: model.name,
+      baseModelId: model.baseModelId,
+      version: model.version,
+      displayName: model.displayName,
+      supportedGenerationMethods:
+        model.supportedGenerationMethods || [],
+      inputTokenLimit: model.inputTokenLimit,
+      outputTokenLimit: model.outputTokenLimit,
+    }));
+
+    // =================================================
+    // ONLY MODELS THAT SUPPORT generateContent
+    // =================================================
+
+    const generateContentModels = models.filter((model) =>
+      model.supportedGenerationMethods.includes(
+        "generateContent"
+      )
     );
-
-    // =================================================
-    // ONLY GENERATE CONTENT MODELS
-    // =================================================
-
-    const generateContentModels =
-      models.filter((model) =>
-        model.supportedActions.includes(
-          "generateContent"
-        )
-      );
 
     // =================================================
     // RESPONSE
