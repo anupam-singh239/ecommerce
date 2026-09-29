@@ -315,14 +315,14 @@ function ShoppingAccount() {
       } else {
         setError(
           result.message ||
-            "Failed to upload profile photo."
+          "Failed to upload profile photo."
         );
       }
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          err?.message ||
-          "Something went wrong while uploading profile photo."
+        err?.message ||
+        "Something went wrong while uploading profile photo."
       );
     } finally {
       setIsUploadingImage(false);
@@ -398,14 +398,14 @@ function ShoppingAccount() {
       } else {
         setError(
           result.message ||
-            "Failed to update profile."
+          "Failed to update profile."
         );
       }
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          err?.message ||
-          "Something went wrong while updating profile."
+        err?.message ||
+        "Something went wrong while updating profile."
       );
     }
   }
@@ -522,14 +522,14 @@ function ShoppingAccount() {
       } else {
         setError(
           result.message ||
-            "Failed to change password."
+          "Failed to change password."
         );
       }
     } catch (err) {
       setError(
         err?.response?.data?.message ||
-          err?.message ||
-          "Something went wrong while changing password."
+        err?.message ||
+        "Something went wrong while changing password."
       );
     } finally {
       setIsChangingPassword(false);
@@ -1223,7 +1223,7 @@ function ShoppingAccount() {
         {activeSection === "overview" && <Overview />}
 
         {activeSection === "personal" && (
-          <PersonalInformation />
+          PersonalInformation()
         )}
 
         {activeSection === "wishlist" && (
