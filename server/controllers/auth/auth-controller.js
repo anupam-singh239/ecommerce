@@ -168,6 +168,9 @@ const authMiddleware = async (req, res, next) => {
 // ===============================
 // Admin Middleware
 // ===============================
+// ===============================
+// Admin Middleware
+// ===============================
 const adminMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
 
@@ -179,19 +182,39 @@ const adminMiddleware = async (req, res, next) => {
   }
 
   try {
+    // Verify JWT
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
     );
 
-    if (decoded.role !== "admin") {
+    // Get latest user data from MongoDB
+    const user = await User.findById(decoded.id).select(
+      "_id userName email role"
+    );
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "User not found!",
+      });
+    }
+
+    // Check CURRENT role from database
+    if (user.role !== "admin") {
       return res.status(403).json({
         success: false,
         message: "Access denied! Admin only.",
       });
     }
 
-    req.user = decoded;
+    // Use latest user information
+    req.user = {
+      id: user._id,
+      userName: user.userName,
+      email: user.email,
+      role: user.role,
+    };
 
     next();
   } catch (error) {
